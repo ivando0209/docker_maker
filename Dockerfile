@@ -15,18 +15,20 @@
 #######################################################################
 # Set this image build bas on ubuntu:16.04
 #
-FROM ubuntu:16.04
+# FROM ubuntu:16.04
+FROM jenkins/jenkins:lts
 ENV TERM xterm-256color
 
 ARG DOCKER_USER="jenkins"
 ARG DOCKER_PASS="j@1234"
+# ARG DOCKER_USER_UID=1000
 
 USER root
 
 # Set password=toor for root user
 RUN echo 'root:toor' | chpasswd
 
-RUN useradd -rm -d /home/${DOCKER_USER} -s /bin/bash -g root -G sudo -u 1000 ${DOCKER_USER}
+# RUN useradd -rm -d /home/${DOCKER_USER} -s /bin/bash -g root -G sudo -u ${DOCKER_USER_UID} ${DOCKER_USER}
 # -r, --system Create a system account. see: Implications creating system accounts
 # -m, --create-home Create the user's home directory.
 # -d, --home-dir HOME_DIR Home directory of the new account.
@@ -41,7 +43,7 @@ RUN echo "${DOCKER_USER}:${DOCKER_PASS}" | chpasswd
 
 # Install basic packages
 
-RUN apt-get update && apt-get install -y apt-utils apt-transport-https ca-certificates curl gnupg2 software-properties-common sudo openssh-server ssh net-tools htop glances
+RUN apt-get update && apt-get install -y apt-utils apt-transport-https ca-certificates curl gnupg2 software-properties-common
 
 # Install additional packages
 
@@ -50,9 +52,18 @@ RUN apt update && apt install -y openjdk-8-jdk
 RUN update-alternatives --config java
 RUN update-alternatives --config javac
 
-RUN apt-get install -y git-core gnupg flex bison build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig repo bc  mkisofs
+RUN apt-get install -y git-core gnupg flex bison build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig repo bc  mkisofs sudo openssh-server ssh net-tools htop glances
+
+# Install jenkins packages
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+RUN apt-key fingerprint 0EBFCD88
+RUN add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/debian \
+       $(lsb_release -cs) stable"
+RUN apt-get update && apt-get install -y docker-ce-cli
 
 # Switch to user
 USER ${DOCKER_USER}
 WORKDIR /home/${DOCKER_USER}
+RUN jenkins-plugin-cli --plugins blueocean:1.24.3
 
