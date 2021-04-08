@@ -6,10 +6,14 @@
 # Git email: user has to set in side docker image or share with user in host
 
 # Build docker 	image command: docker build -t jenkins:1.0  .
-# Run docker command: docker run -it --name build_android --rm --volume /home/ivando:/home/jenkins jenkins:1.0 bash
+#
+# Run docker command: docker run -it --name build_android --rm --volume /home/ivando:/home/jenkins --volume /etc/localtime:/etc/localtime:ro jenkins:1.0 bash
 #  --> option: [--volume /home/ivando:/home/jenkins] to mount host's folder [/home/ivando] to docker's foler [/home/jenkins] in oder to use host user config
+#  --> option: [--volume /etc/localtime:/etc/localtime:ro] to set host's datetime to docker
 #  --> add [--rm] option to auto remove docker container when exit
+#
 # Exec docker containers: docker exec -it $containerID bash
+#
 # Attach inside the container: docker attach build_android
 #
 #######################################################################
