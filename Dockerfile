@@ -5,29 +5,28 @@
 # Git username: user has to set in side docker image or share with user in host
 # Git email: user has to set in side docker image or share with user in host
 
-# Build docker     image command: docker build -t jenkins:1.0  .
-# Run docker command: docker run -it --name build_android --rm --volume /home/ivando:/home/jenkins jenkins:1.0 bash
-#  --> option: [--volume /home/ivando:/home/jenkins] to mount host's folder [/home/ivando] to docker's foler [/home/jenkins] in oder to use host user config
+# Build docker image command: docker build -t build_machine:1.0  .
+# Run docker command: docker run -it --name build_docker --rm --volume /home/ivando:/home/ivando build_machine:1.0 bash
+#  --> option: [--volume /home/ivando:/home/ivando] to mount host's folder [/home/ivando] to docker's folder [/home/ivando] in oder to use host user config
 #  --> add [--rm] option to auto remove docker container when exit
 # Exec docker containers: docker exec -it $containerID bash
-# Attach inside the container: docker attach build_android
+# Attach inside the container: docker attach build_docker
 #
 # After create image, we can export container to tar file then import to WSL or Docker on other PC
 # https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro
 #######################################################################
-# Set this image build bas on ubuntu:16.04
+# Set this image build bas on ubuntu:14.04
 #
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 ENV TERM xterm-256color
 
-ARG DOCKER_USER="builder"
-ARG DOCKER_PASS="builder"
+# Replace DOCKER_USER="ivando"  and DOCKER_UID=1001 by your host username-userid 
+ARG DOCKER_USER="ivando"
+ARG DOCKER_UID=1001
+ARG DOCKER_GID=1000
+ARG DOCKER_PASS=1
 
 USER root
-ENV TZ="Asia/Ho_Chi_Minh"
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
 
 # Install basic packages
 RUN apt-get update
@@ -122,38 +121,32 @@ RUN apt-get install -y  liblzo2-dev
 RUN apt-get install -y  libpam0g-dev
 RUN apt-get install -y  uuid-dev
 RUN apt-get install -y  zlibc
-RUN apt-get install -y  zstd
-RUN apt-get install -y  libzstd1-dev
-RUN apt-get install -y  repo
+#RUN apt-get install -y  zstd
+#RUN apt-get install -y  libzstd1-dev
+#RUN apt-get install -y  repo
 RUN apt-get install -y autotools-dev
 RUN apt-get install -y automake
-RUN apt-get install -y modinfo
+# RUN apt-get install -y modinfo
 RUN apt-get install -y pkg-config m4 libtool automake autoconf kmod uuid-dev mtd-utils libssl-dev liblzo2-dev libpam0g-dev
 
 # Set up custom toolchains
 # Download and install armv6eb-9.3-uclibc
-RUN git clone --depth 1 -b armv6eb-9.3-uclibc https://gct_git_ro:gct_git_ro_1234%21@release.gctsemi.com/toolchain armv6eb-9.3-uclibc
-RUN tar -zxf armv6eb-9.3-uclibc/armv6eb-9.3-uclibc.tgz -C /opt
+# RUN git clone --depth 1 -b armv6eb-9.3-uclibc https://gct_git_ro:gct_git_ro_1234%21@release.gctsemi.com/toolchain armv6eb-9.3-uclibc
+# RUN tar -zxf armv6eb-9.3-uclibc/armv6eb-9.3-uclibc.tgz -C /opt
 
 # Download and install armebv6
-RUN git clone --depth 1 -b armebv6 https://gct_git_ro:gct_git_ro_1234%21@release.gctsemi.com/toolchain armebv6
-RUN tar -zxf armebv6/armebv6.tgz -C /opt
-
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
+# RUN git clone --depth 1 -b armebv6 https://gct_git_ro:gct_git_ro_1234%21@release.gctsemi.com/toolchain armebv6
+# RUN tar -zxf armebv6/armebv6.tgz -C /opt
 
 RUN locale-gen en_US.UTF-8
 RUN update-locale
 
-RUN echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "ivando ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Set up User
 # Set password=root for root user
 RUN echo 'root:root' | chpasswd
-RUN useradd -rm -d /home/${DOCKER_USER} -s /bin/bash -g root -G sudo ${DOCKER_USER} -p ${DOCKER_PASS}
+RUN useradd -rm -d /home/${DOCKER_USER} -s /bin/bash -u ${DOCKER_UID} -g root -G sudo ${DOCKER_USER} -p ${DOCKER_PASS}
 # -r, --system Create a system account. see: Implications creating system accounts
 # -m, --create-home Create the user's home directory.
 # -d, --home-dir HOME_DIR Home directory of the new account.
@@ -163,7 +156,7 @@ RUN useradd -rm -d /home/${DOCKER_USER} -s /bin/bash -g root -G sudo ${DOCKER_US
 # -u, --uid UID Specify user ID. see: Understanding how uid and gid work in Docker containers
 # -p, --password PASSWORD Encrypted password of the new account (e.g. ubuntu).
 # Set password=j@123 for jenkins user
-# RUN echo "${DOCKER_USER}:${DOCKER_PASS}" | chpasswd
+RUN echo "${DOCKER_USER}:${DOCKER_PASS}" | chpasswd
 
 # Switch to user
 USER ${DOCKER_USER}
