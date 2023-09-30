@@ -17,12 +17,12 @@
 #######################################################################
 # Set this image build bas on ubuntu:14.04
 #
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 ENV TERM xterm-256color
 
-# Replace DOCKER_USER="ivando"  and DOCKER_UID=1001 by your host username-userid 
-ARG DOCKER_USER="ivando"
-ARG DOCKER_UID=1001
+# Replace DOCKER_USER="ivando"  and DOCKER_UID=1001 by your host username-userid
+ARG DOCKER_USER="user"
+ARG DOCKER_UID=1000
 ARG DOCKER_GID=1000
 ARG DOCKER_PASS=1
 
@@ -83,7 +83,7 @@ RUN apt-get install -y  locales
 RUN apt-get install -y  libncurses5-dev
 RUN apt-get install -y  dialog
 RUN apt-get install -y  whiptail
-# RUN apt-get install -y  qemu
+RUN apt-get install -y  boxes
 RUN apt-get install -y  gawk
 RUN apt-get install -y  wget
 RUN apt-get install -y  diffstat
@@ -121,9 +121,9 @@ RUN apt-get install -y  liblzo2-dev
 RUN apt-get install -y  libpam0g-dev
 RUN apt-get install -y  uuid-dev
 RUN apt-get install -y  zlibc
-#RUN apt-get install -y  zstd
-#RUN apt-get install -y  libzstd1-dev
-#RUN apt-get install -y  repo
+RUN apt-get install -y  zstd
+RUN apt-get install -y  libzstd1-dev
+RUN apt-get install -y  repo
 RUN apt-get install -y autotools-dev
 RUN apt-get install -y automake
 # RUN apt-get install -y modinfo
@@ -141,7 +141,7 @@ RUN apt-get install -y pkg-config m4 libtool automake autoconf kmod uuid-dev mtd
 RUN locale-gen en_US.UTF-8
 RUN update-locale
 
-RUN echo "ivando ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Set up User
 # Set password=root for root user
