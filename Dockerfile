@@ -30,104 +30,18 @@ USER root
 
 # Install basic packages
 RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y apt-transport-https
-RUN apt-get install -y ca-certificates
-RUN apt-get install -y curl
-RUN apt-get install -y gnupg2
-RUN apt-get install -y software-properties-common
-RUN apt-get install -y sudo
-RUN apt-get install -y tzdata
+RUN apt-get install -y apt-utils apt-transport-https ca-certificates curl gnupg2 software-properties-common sudo tzdata
 
 # Install additional packages
 RUN add-apt-repository -y ppa:openjdk-r/ppa
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
 RUN apt-get update
+RUN apt-get install -y  git-core gnupg flex bison build-essential zip zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev gperf libc6-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig bc mkisofs gcc-arm-none-eabi openssh-server ssh net-tools htop nano vim git locales libncurses5-dev dialog whiptail boxes gawk wget diffstat texinfo chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-jinja2 libegl1-mesa libsdl1.2-dev xterm make docbook-utils fop dblatex xmlto bash-completion tofrodos python-markdown libssl-dev rsync device-tree-compiler libfdt1 libfdt1 u-boot-tools libcrypto++-dev liblzo2-dev libpam0g-dev uuid-dev zlibc zstd libzstd1-dev repo autotools-dev automake pkg-config m4 libtool automake autoconf kmod uuid-dev mtd-utils libssl-dev liblzo2-dev libpam0g-dev git-lfs
 RUN apt-get install -y openjdk-8-jdk
 RUN update-alternatives --config java
 RUN update-alternatives --config javac
 
-# RUN apt-get update
 
-RUN apt-get install -y  git-core
-RUN apt-get install -y  gnupg
-RUN apt-get install -y  flex
-RUN apt-get install -y  bison
-RUN apt-get install -y  build-essential
-RUN apt-get install -y  zip
-RUN apt-get install -y  zlib1g-dev
-RUN apt-get install -y  gcc-multilib
-RUN apt-get install -y  g++-multilib
-RUN apt-get install -y  libc6-dev-i386
-RUN apt-get install -y  lib32ncurses5-dev
-RUN apt-get install -y  gperf
-RUN apt-get install -y  libc6-dev
-RUN apt-get install -y  x11proto-core-dev
-RUN apt-get install -y  libx11-dev
-RUN apt-get install -y  lib32z1-dev
-RUN apt-get install -y  libgl1-mesa-dev
-RUN apt-get install -y  libxml2-utils
-RUN apt-get install -y  xsltproc
-RUN apt-get install -y  unzip
-RUN apt-get install -y  fontconfig
-RUN apt-get install -y  bc
-RUN apt-get install -y  mkisofs
-RUN apt-get install -y  gcc-arm-none-eabi
-RUN apt-get install -y  openssh-server
-RUN apt-get install -y  ssh
-RUN apt-get install -y  net-tools
-RUN apt-get install -y  htop
-RUN apt-get install -y  nano
-RUN apt-get install -y  vim
-RUN apt-get install -y  git
-RUN apt-get install -y  locales
-RUN apt-get install -y  libncurses5-dev
-RUN apt-get install -y  dialog
-RUN apt-get install -y  whiptail
-RUN apt-get install -y  boxes
-RUN apt-get install -y  gawk
-RUN apt-get install -y  wget
-RUN apt-get install -y  diffstat
-RUN apt-get install -y  texinfo
-RUN apt-get install -y  chrpath
-RUN apt-get install -y  socat
-RUN apt-get install -y  cpio
-RUN apt-get install -y  python3
-RUN apt-get install -y  python3-pip
-RUN apt-get install -y  python3-pexpect
-RUN apt-get install -y  xz-utils
-RUN apt-get install -y  debianutils
-RUN apt-get install -y  iputils-ping
-RUN apt-get install -y  python3-jinja2
-RUN apt-get install -y  libegl1-mesa
-RUN apt-get install -y  libsdl1.2-dev
-RUN apt-get install -y  xterm
-RUN apt-get install -y  make
-RUN apt-get install -y  docbook-utils
-RUN apt-get install -y  fop
-RUN apt-get install -y  dblatex
-RUN apt-get install -y  xmlto
-RUN apt-get install -y  bash-completion
-# RUN apt-get install -y  screen
-RUN apt-get install -y  tofrodos
-RUN apt-get install -y  python-markdown
-RUN apt-get install -y  libssl-dev
-RUN apt-get install -y  rsync
-RUN apt-get install -y  device-tree-compiler
-RUN apt-get install -y  libfdt1
-RUN apt-get install -y  libfdt1
-RUN apt-get install -y  u-boot-tools
-RUN apt-get install -y  libcrypto++-dev
-RUN apt-get install -y  liblzo2-dev
-RUN apt-get install -y  libpam0g-dev
-RUN apt-get install -y  uuid-dev
-RUN apt-get install -y  zlibc
-RUN apt-get install -y  zstd
-RUN apt-get install -y  libzstd1-dev
-RUN apt-get install -y  repo
-RUN apt-get install -y autotools-dev
-RUN apt-get install -y automake
-# RUN apt-get install -y modinfo
-RUN apt-get install -y pkg-config m4 libtool automake autoconf kmod uuid-dev mtd-utils libssl-dev liblzo2-dev libpam0g-dev
 
 # Set up custom toolchains
 # Download and install armv6eb-9.3-uclibc
